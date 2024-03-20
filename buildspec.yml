@@ -7,9 +7,9 @@ phases:
       - echo Logging int amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 475327971601.dkr.ecr.us-east-1.amazonaws.com
       - echo setting repository URI....
-      - REPOSITORY_URI= 475327971601.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=475327971601.dkr.ecr.us-east-1.amazonaws.com
       - echo setting image tag....
-      - IMAGE_TAG= build-$(echo $CODEBUILD_ID | awk -F":" '{print $2}')
+      - IMAGE_TAG=build-$(echo $CODEBUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo building and tagging stared image on 'date'
