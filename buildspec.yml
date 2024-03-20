@@ -1,39 +1,49 @@
+#version: 0.2
+#
+#phases:
+#  pre_build:
+#    commands:
+#      - echo Logging into Amazon ECR started on 'date'
+#      - aws --version
+#      - echo Logging into Amazon ECR...
+#      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 475327971601.dkr.ecr.us-east-1.amazonaws.com
+#      - echo setting repository URI...
+#      - REPOSITORY_URI=475327971601.dkr.ecr.us-east-1.amazonaws.com
+#      - echo setting image tag...
+#      - IMAGE_TAG=build-$(echo $CODEBUILD_ID | awk -F":" '{print $2}')
+#  build:
+#    commands:
+#      - echo building and tagging started image on 'date'
+#      - echo running mvn clean install
+#      - mvn clean install
+#      - echo building docker image
+#      - docker build -t $REPOSITORY:latest .
+#      - echo tagging the docker image
+#      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+#  post_build:
+#    commands:
+#      - echo push docker image to Amazon ECR started on 'date'
+#      - echo pushing $REPOSITORY_URI:latest
+#      - docker push $REPOSITORY_URI:latest
+#      - docker push $REPOSITORY_URI:$IMAGE_TAG
+#      - echo setting container name...
+#      - DOCKER_CONTAINER_NAME=cicdcontainer
+#      - echo writing image definitions file...
+#      - printf  [{"name": "%s", "imageUrl":"%s"}] $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+#      - echo $DOCKER_CONTAINER_NAME
+#      - echo printing imagedefinitions.json
+#      - cat imagedefinitions.json
+#
+#artifacts:
+#  files:
+#    - imagedefinitions.json
+
 version: 0.2
 
 phases:
   pre_build:
     commands:
-      - echo Logging into Amazon ECR started on 'date'
-      - aws --version
-      - echo Logging into Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 475327971601.dkr.ecr.us-east-1.amazonaws.com
-      - echo setting repository URI...
-      - REPOSITORY_URI=475327971601.dkr.ecr.us-east-1.amazonaws.com
-      - echo setting image tag...
-      - IMAGE_TAG=build-$(echo $CODEBUILD_ID | awk -F":" '{print $2}')
-  build:
-    commands:
-      - echo building and tagging started image on 'date'
-      - echo running mvn clean install
       - mvn clean install
-      - echo building docker image
-      - docker build -t $REPOSITORY:latest .
-      - echo tagging the docker image
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-  post_build:
-    commands:
-      - echo push docker image to Amazon ECR started on 'date'
-      - echo pushing $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo setting container name...
-      - DOCKER_CONTAINER_NAME=cicdcontainer
-      - echo writing image definitions file...
-      - printf  '[{"name": "%s", "imageUrl":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - echo $DOCKER_CONTAINER_NAME
-      - echo printing imagedefinitions.json
-      - cat imagedefinitions.json
-
-artifacts:
-  files:
-    - imagedefinitions.json
+      - docker tag cicdpipeline:latest 475327971601.dkr.ecr.us-east-1.amazonaws.com/cicdpipeline:latest
+      - docker push 475327971601.dkr.ecr.us-east-1.amazonaws.com/cicdpipeline:latest
