@@ -44,7 +44,7 @@ phases:
   pre_build:
     commands:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 475327971601.dkr.ecr.us-east-1.amazonaws.com
-      - gradle clean build
+      - gradle build
       - docker build -t cicdpipeline .
       - docker tag cicdpipeline:latest 475327971601.dkr.ecr.us-east-1.amazonaws.com/cicdpipeline:latest
       - docker push 475327971601.dkr.ecr.us-east-1.amazonaws.com/cicdpipeline:latest
