@@ -39,9 +39,9 @@
 #    - imagedefinitions.json
 
 version: 0.2
-install:
-  runtime-versions:
-    java: corretto21
+#install:
+#  runtime-versions:
+#    java: corretto21
 phases:
   pre_build:
     commands:
